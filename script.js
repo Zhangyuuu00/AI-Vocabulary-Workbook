@@ -249,6 +249,12 @@ function setupEventListeners() {
         });
     }
     
+    // 搜索按钮事件
+    const searchBtn = document.getElementById('searchBtn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    
     // 状态标签事件
     document.querySelectorAll('.status-tab').forEach(tab => {
         tab.addEventListener('click', function() {

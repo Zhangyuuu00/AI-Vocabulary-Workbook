@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索按钮测试</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <h1>🔍 搜索按钮测试</h1>
+            </div>
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="搜索词库中的词组...">
+                    <button type="button" id="searchBtn" class="search-btn">搜索</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <p>测试搜索按钮功能：</p>
+            <ul>
+                <li>在搜索框中输入文字</li>
+                <li>点击"搜索"按钮执行搜索</li>
+                <li>或者按回车键执行搜索</li>
+            </ul>
+            
+            <div id="searchResults">
+                <p>搜索结果将显示在这里...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟词库数据
+        const testWords = [
+            { word: "AI", meaning: "人工智能" },
+            { word: "Machine Learning", meaning: "机器学习" },
+            { word: "Deep Learning", meaning: "深度学习" },
+            { word: "Neural Network", meaning: "神经网络" }
+        ];
+
+        // 搜索功能
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (searchTerm === '') {
+                resultsDiv.innerHTML = '<p>请输入搜索内容</p>';
+                return;
+            }
+            
+            const results = testWords.filter(word => 
+                word.word.toLowerCase().includes(searchTerm) || 
+                word.meaning.toLowerCase().includes(searchTerm)
+            );
+            
+            if (results.length > 0) {
+                const resultsHTML = results.map(word => 
+                    `<div style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                        <strong>${word.word}</strong>: ${word.meaning}
+                    </div>`
+                ).join('');
+                resultsDiv.innerHTML = `<h3>找到 ${results.length} 个结果：</h3>${resultsHTML}`;
+            } else {
+                resultsDiv.innerHTML = '<p>没有找到匹配的结果</p>';
+            }
+            
+            console.log(`🔍 搜索"${searchTerm}"，找到 ${results.length} 个结果`);
+        }
+
+        // 设置事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 搜索按钮事件
+            const searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+                console.log('✅ 搜索按钮事件监听器已设置');
+            }
+            
+            // 搜索框回车键事件
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+                console.log('✅ 搜索框回车键事件监听器已设置');
+            }
+            
+            console.log('✅ 搜索按钮测试页面已加载');
+        });
+    </script>
+</body>
+</html>
