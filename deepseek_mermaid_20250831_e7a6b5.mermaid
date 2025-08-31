@@ -1,0 +1,51 @@
+flowchart TD
+    %% 定义可爱风格样式
+    classDef user fill:#FFE6F2,stroke:#FF9BCC,stroke-width:2px,color:#CC0066,stroke-dasharray: 5 5;
+    classDef interface fill:#D1E8FF,stroke:#66B2FF,stroke-width:2px,color:#0066CC;
+    classDef process fill:#DAFFD1,stroke:#66CC66,stroke-width:2px,color:#267F26;
+    classDef agent fill:#FFF2CC,stroke:#FFCC00,stroke-width:3px,color:#CC6600;
+    classDef core fill:#FFE6CC,stroke:#FF9933,stroke-width:3px,color:#CC6600;
+    classDef protocol fill:#E6E6FF,stroke:#9999FF,stroke-width:2px,color:#6600CC;
+    classDef tool fill:#FFEDED,stroke:#FF6666,stroke-width:2px,color:#CC0000;
+
+    A["👩💻 用户<br>(User)"]
+    class A user;
+
+    B["🖱️ 图形界面<br>(GUI - Graphical User Interface)"]
+    class B interface;
+
+    subgraph Software["💾 应用软件<br>(Software Application)"]
+        direction LR
+        C["🎨 前端<br>(Front-End)"]
+        D["⚙️ 后端<br>(Back-End)"]
+        C <-.->|"请求与响应<br>(Request & Response)"| D
+    end
+    class C interface;
+    class D process;
+
+    subgraph AI_Agent["🤖 智能体<br>(AI Agent)"]
+        E["🌟 代理核心<br>(Agent Core)"]
+        F["🧠 大模型<br>(LLM - Large Language Model)"]
+        E <-->|"规划与调用<br>(Plan & Invoke)"| F
+    end
+    class E agent;
+    class F core;
+
+    G["🔌 MCP 协议<br>(Model Context Protocol)"]
+    class G protocol;
+
+    subgraph Tools["🛠️ 工具生态<br>(Tool Ecosystem)"]
+        direction LR
+        H["📦 MCP Server<br>(Model Context Protocol Server)"]
+        I["⚗️ 原生工具<br>(APIs, CLIs, Databases)"]
+        H -.->|"封装调用<br>(Wrap & Call)"| I
+    end
+    class H tool;
+    class I tool;
+
+    A -->|"使用<br>(Use)"| B
+    B -->|"触发<br>(Trigger)"| C
+    D -->|"交由<br>(Delegate to)"| E
+    F -->|"指导<br>(Guide)"| D
+    E -->|"通过<br>(Via)"| G
+    G -->|"连接<br>(Connect to)"| H

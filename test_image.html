@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片显示测试</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-right-btn">
+            <button class="relationship-btn" id="relationshipBtn">🔗 词汇关系网</button>
+        </div>
+        
+        <div class="header">
+            <div class="header-top">
+                <h1>🖼️ 图片显示测试</h1>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <p>点击右上角的"🔗 词汇关系网"按钮来测试图片显示功能</p>
+        </div>
+    </div>
+
+    <div id="relationshipModal" class="relationship-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔗 词汇关系网</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="relationship-network" id="relationshipNetwork">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 词汇关系网功能
+        function showRelationshipModal() {
+            const modal = document.getElementById('relationshipModal');
+            if (modal) {
+                modal.classList.add('show');
+                generateRelationshipNetwork();
+                console.log('🔗 词汇关系网模态框已打开');
+            }
+        }
+
+        function closeRelationshipModal() {
+            const modal = document.getElementById('relationshipModal');
+            if (modal) {
+                modal.classList.remove('show');
+                console.log('🔗 词汇关系网模态框已关闭');
+            }
+        }
+
+        function generateRelationshipNetwork() {
+            const networkContainer = document.getElementById('relationshipNetwork');
+            if (!networkContainer) return;
+            
+            // 清空容器
+            networkContainer.innerHTML = '';
+            
+            // 直接显示图片
+            const networkHTML = `
+                <div class="image-display">
+                    <img src="deepseek_mermaid_20250831_888dff.png" alt="AI系统架构图" class="architecture-image">
+                    <div class="image-caption">
+                        <h3>🔗 AI智能体系统架构图</h3>
+                        <p>完整的AI系统架构关系图，展示了从用户界面到AI核心的完整数据流</p>
+                    </div>
+                </div>
+            `;
+            
+            networkContainer.innerHTML = networkHTML;
+        }
+
+        // 设置事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 词汇关系网按钮事件
+            const relationshipBtn = document.getElementById('relationshipBtn');
+            if (relationshipBtn) {
+                relationshipBtn.addEventListener('click', showRelationshipModal);
+            }
+            
+            // 模态框关闭按钮事件
+            const closeModalBtn = document.getElementById('closeModal');
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeRelationshipModal);
+            }
+            
+            // 点击模态框外部关闭
+            const modal = document.getElementById('relationshipModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeRelationshipModal();
+                    }
+                });
+            }
+            
+            // ESC键关闭模态框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeRelationshipModal();
+                }
+            });
+            
+            console.log('✅ 图片显示测试页面已加载');
+        });
+    </script>
+</body>
+</html>

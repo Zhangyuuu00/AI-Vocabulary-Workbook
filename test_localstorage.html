@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>localStorage测试页面</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .status-display {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #eee;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .status-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .status-familiar { background: #28a745; }
+        .status-heard { background: #ffc107; }
+        .status-unknown { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 localStorage功能测试页面</h1>
+        
+        <div class="test-section">
+            <h3>📊 当前localStorage状态</h3>
+            <div id="localStorageStatus" class="status-display">
+                正在检查localStorage...
+            </div>
+            <button onclick="checkLocalStorage()">🔄 刷新状态</button>
+            <button onclick="clearLocalStorage()">🗑️ 清空localStorage</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📝 测试词语分类</h3>
+            <p>点击下面的按钮来改变词语状态，然后刷新页面查看是否保持：</p>
+            
+            <div id="wordList">
+                <!-- 词语列表将在这里动态生成 -->
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 测试说明</h3>
+            <ol>
+                <li>点击词语旁边的状态按钮来改变分类</li>
+                <li>刷新页面（F5或Ctrl+R）</li>
+                <li>检查词语分类是否保持不变</li>
+                <li>查看localStorage中的数据</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // 测试用的词语数据
+        const testWords = [
+            { id: 1, word: "大模型 (LLM)", status: "unknown" },
+            { id: 2, word: "Agent (智能体)", status: "unknown" },
+            { id: 3, word: "MCP协议", status: "unknown" },
+            { id: 4, word: "API接口", status: "unknown" }
+        ];
+
+        // 从localStorage加载词语状态
+        function loadWordStatuses() {
+            const savedStatuses = localStorage.getItem('wordStatuses');
+            if (savedStatuses) {
+                try {
+                    const statuses = JSON.parse(savedStatuses);
+                    testWords.forEach(word => {
+                        if (statuses[word.id] && statuses[word.id].status) {
+                            word.status = statuses[word.id].status;
+                        }
+                    });
+                    console.log('✅ 已从localStorage加载词语状态');
+                } catch (error) {
+                    console.error('❌ 加载词语状态时出错:', error);
+                }
+            }
+        }
+
+        // 保存词语状态到localStorage
+        function saveWordStatuses() {
+            try {
+                const statuses = {};
+                testWords.forEach(word => {
+                    statuses[word.id] = {
+                        status: word.status,
+                        lastUpdated: new Date().toISOString()
+                    };
+                });
+                localStorage.setItem('wordStatuses', JSON.stringify(statuses));
+                console.log('✅ 词语状态已保存到localStorage');
+                checkLocalStorage(); // 更新显示
+            } catch (error) {
+                console.error('❌ 保存词语状态时出错:', error);
+            }
+        }
+
+        // 更新词语状态
+        function updateWordStatus(id, status) {
+            const word = testWords.find(w => w.id === id);
+            if (word) {
+                word.status = status;
+                saveWordStatuses();
+                renderWordList();
+                console.log(`✅ 词语"${word.word}"状态已更新为"${status}"`);
+            }
+        }
+
+        // 渲染词语列表
+        function renderWordList() {
+            const wordList = document.getElementById('wordList');
+            wordList.innerHTML = testWords.map(word => `
+                <div class="word-item">
+                    <span><strong>${word.word}</strong> - 当前状态: <span class="status-${word.status}">${getStatusText(word.status)}</span></span>
+                    <div class="status-buttons">
+                        <button class="status-familiar" onclick="updateWordStatus(${word.id}, 'familiar')">熟悉</button>
+                        <button class="status-heard" onclick="updateWordStatus(${word.id}, 'heard')">听过</button>
+                        <button class="status-unknown" onclick="updateWordStatus(${word.id}, 'unknown')">陌生</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'familiar': '熟悉',
+                'heard': '听过',
+                'unknown': '陌生'
+            };
+            return statusMap[status] || '未知';
+        }
+
+        // 检查localStorage状态
+        function checkLocalStorage() {
+            const statusDiv = document.getElementById('localStorageStatus');
+            const savedStatuses = localStorage.getItem('wordStatuses');
+            
+            if (savedStatuses) {
+                try {
+                    const statuses = JSON.parse(savedStatuses);
+                    statusDiv.innerHTML = `
+                        <strong>localStorage中有数据：</strong><br>
+                        <pre>${JSON.stringify(statuses, null, 2)}</pre>
+                    `;
+                } catch (error) {
+                    statusDiv.innerHTML = `<strong>❌ 解析localStorage数据时出错：</strong> ${error.message}`;
+                }
+            } else {
+                statusDiv.innerHTML = '<strong>localStorage中没有数据</strong>';
+            }
+        }
+
+        // 清空localStorage
+        function clearLocalStorage() {
+            localStorage.removeItem('wordStatuses');
+            console.log('🗑️ localStorage已清空');
+            checkLocalStorage();
+            
+            // 重置词语状态
+            testWords.forEach(word => word.status = 'unknown');
+            renderWordList();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 测试页面开始加载');
+            loadWordStatuses();
+            renderWordList();
+            checkLocalStorage();
+            console.log('✅ 测试页面初始化完成');
+        });
+    </script>
+</body>
+</html>
+

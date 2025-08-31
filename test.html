@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI学习记录簿 - 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .vocabulary-card {
+            background: #e3f2fd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .status-unlearned { background: #fff3e0; color: #f57c00; }
+        .status-learning { background: #e3f2fd; color: #1976d2; }
+        .status-familiar { background: #e8f5e8; color: #388e3c; }
+        .status-unfamiliar { background: #ffebee; color: #d32f2f; }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        .nav-btn {
+            background: #666;
+            margin: 5px;
+        }
+        .nav-btn.active {
+            background: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI学习记录簿 - 功能测试</h1>
+    
+    <div class="test-section">
+        <h2>测试词汇显示</h2>
+        <div id="vocabularyGrid"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试底部导航</h2>
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-view="home">首页</button>
+            <button class="nav-btn" data-view="familiar">熟悉词汇</button>
+            <button class="nav-btn" data-view="learning">学习词汇</button>
+            <button class="nav-btn" data-view="unfamiliar">陌生词汇</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试词汇簿</h2>
+        <div id="vocabularyBooks" style="display: none;">
+            <h3 id="booksTitle">词汇簿</h3>
+            <button id="backToHome">返回首页</button>
+            <div id="booksContent"></div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试详情页</h2>
+        <div id="vocabularyDetail" style="display: none;">
+            <h3 id="detailTitle"></h3>
+            <p id="detailDefinition"></p>
+            <div id="featuresList"></div>
+            <div id="applicationsCarousel"></div>
+            <button id="closeDetail">关闭</button>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试学习计划</h2>
+        <div id="studyPlanModal" style="display: none;">
+            <h3>学习计划</h3>
+            <div id="planContent"></div>
+            <button id="closePlanModal">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // 简化的测试数据
+        const vocabularyData = [
+            {
+                id: 1,
+                title: "大模型 (LLM)",
+                description: "基于海量数据训练的"人工智能大脑"",
+                category: "ai",
+                status: "unlearned",
+                definition: "大语言模型（Large Language Model）是一种基于深度学习的自然语言处理模型。",
+                features: [
+                    { icon: "🧠", text: "海量数据训练" },
+                    { icon: "💬", text: "语言理解生成" }
+                ],
+                applications: [
+                    { name: "GPT-4", description: "OpenAI开发的大语言模型" },
+                    { name: "Claude 3", description: "Anthropic开发的AI助手" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Agent (智能体)",
+                description: "拥有"大脑"的"虚拟员工"",
+                category: "ai",
+                status: "unlearned",
+                definition: "智能体是一种能够感知环境、做出决策并执行行动的AI系统。",
+                features: [
+                    { icon: "👁️", text: "环境感知" },
+                    { icon: "🧠", text: "智能决策" }
+                ],
+                applications: [
+                    { name: "Claude Code", description: "自动写代码、调试的AI助手" }
+                ]
+            }
+        ];
+
+        let currentView = 'home';
+        let filteredVocabulary = [...vocabularyData];
+
+        // 渲染词汇网格
+        function renderVocabularyGrid() {
+            const grid = document.getElementById('vocabularyGrid');
+            grid.innerHTML = filteredVocabulary.map(item => `
+                <div class="vocabulary-card">
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <div class="status status-${item.status}" onclick="changeStatus(${item.id})">
+                        ${getStatusText(item.status)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'unlearned': '未学习',
+                'learning': '学习中',
+                'familiar': '已熟悉',
+                'unfamiliar': '需复习'
+            };
+            return statusMap[status] || '未学习';
+        }
+
+        // 改变状态
+        function changeStatus(id) {
+            const item = vocabularyData.find(v => v.id === id);
+            if (item) {
+                const statuses = ['unlearned', 'learning', 'familiar', 'unfamiliar'];
+                const currentIndex = statuses.indexOf(item.status);
+                const nextIndex = (currentIndex + 1) % statuses.length;
+                item.status = statuses[nextIndex];
+                renderVocabularyGrid();
+            }
+        }
+
+        // 切换视图
+        function switchView(view) {
+            currentView = view;
+            console.log('切换到视图:', view);
+            
+            // 更新导航按钮状态
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+            
+            if (view === 'home') {
+                document.getElementById('vocabularyBooks').style.display = 'none';
+                renderVocabularyGrid();
+            } else {
+                document.getElementById('vocabularyBooks').style.display = 'block';
+                document.getElementById('booksTitle').textContent = getBooksTitle(view);
+                renderVocabularyBooks();
+            }
+        }
+
+        // 获取词汇簿标题
+        function getBooksTitle(view) {
+            const titles = {
+                'familiar': '熟悉词汇簿',
+                'learning': '学习词汇簿',
+                'unfamiliar': '陌生词汇簿'
+            };
+            return titles[view] || '词汇簿';
+        }
+
+        // 渲染词汇簿
+        function renderVocabularyBooks() {
+            const status = currentView;
+            const items = vocabularyData.filter(item => item.status === status);
+            const content = document.getElementById('booksContent');
+            
+            content.innerHTML = `
+                <h4>${getBooksTitle(status)} (${items.length})</h4>
+                ${items.map(item => `
+                    <div class="vocabulary-card">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 底部导航点击
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const view = e.target.closest('.nav-btn').dataset.view;
+                    if (view) {
+                        switchView(view);
+                    }
+                });
+            });
+
+            // 返回首页
+            document.getElementById('backToHome').addEventListener('click', () => {
+                switchView('home');
+            });
+        }
+
+        // 初始化
+        function initApp() {
+            console.log('初始化测试应用');
+            console.log('词汇数据数量:', vocabularyData.length);
+            renderVocabularyGrid();
+            setupEventListeners();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
+

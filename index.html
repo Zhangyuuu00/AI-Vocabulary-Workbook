@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI相关词库学习簿</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 右上角词汇关系网按钮 -->
+        <div class="top-right-btn">
+            <button class="relationship-btn" id="relationshipBtn">🔗 词汇关系网</button>
+        </div>
+        
+        <div class="header">
+            <div class="header-top">
+                <h1>📚 AI相关词库学习簿</h1>
+            </div>
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="搜索词库中的词组...">
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="status-tabs">
+                <button class="status-tab active" data-status="all">全部词组</button>
+                <button class="status-tab" data-status="familiar">熟悉</button>
+                <button class="status-tab" data-status="heard">听过</button>
+                <button class="status-tab" data-status="unknown">陌生</button>
+            </div>
+
+            <div class="words-grid" id="wordsGrid">
+                <!-- 词组卡片将在这里动态生成 -->
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">总词组</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="familiarCount">0</div>
+                    <div class="stat-label">熟悉</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="heardCount">0</div>
+                    <div class="stat-label">听过</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="unknownCount">0</div>
+                    <div class="stat-label">陌生</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 词汇关系网模态框 -->
+    <div id="relationshipModal" class="relationship-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔗 词汇关系网</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="relationship-network" id="relationshipNetwork">
+                    <!-- 词汇关系网将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

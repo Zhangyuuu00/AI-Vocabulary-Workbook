@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索框测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #8B9DC3 0%, #E6E6FA 50%, #FFE4E1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            padding: 15px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 5px;
+            background: transparent;
+            color: #333;
+        }
+        
+        .search-icon {
+            color: #666;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 搜索框功能测试</h1>
+        
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="testSearchInput" class="search-input" placeholder="请在这里输入文字测试搜索框...">
+        </div>
+        
+        <div class="test-result">
+            <h3>测试说明：</h3>
+            <ul>
+                <li>点击搜索框，应该能看到光标闪烁</li>
+                <li>可以正常输入文字</li>
+                <li>输入的文字会显示在下方</li>
+            </ul>
+            
+            <h3>输入内容：</h3>
+            <div id="inputDisplay">等待输入...</div>
+        </div>
+        
+        <button onclick="clearInput()" style="margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">清空输入</button>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('testSearchInput');
+        const inputDisplay = document.getElementById('inputDisplay');
+        
+        searchInput.addEventListener('input', function(e) {
+            inputDisplay.textContent = e.target.value || '等待输入...';
+        });
+        
+        searchInput.addEventListener('focus', function() {
+            console.log('搜索框获得焦点');
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            console.log('搜索框失去焦点');
+        });
+        
+        function clearInput() {
+            searchInput.value = '';
+            inputDisplay.textContent = '等待输入...';
+            searchInput.focus();
+        }
+        
+        // 页面加载完成后自动聚焦到搜索框
+        window.addEventListener('load', function() {
+            searchInput.focus();
+        });
+    </script>
+</body>
+</html>
+
